@@ -1,10 +1,13 @@
 # clj-xlsxio
 
-A Clojure library designed to ... well, that part is up to you.
+XLSXIO bidings for clojure
 
 ## Usage
 
-FIXME
+EXTREMELLY EXPERIMENTAL SOFTWARE!!
+DO NOT USE IT YET!!!!!!!!
+
+I promise that when the project is decent I will improve this docs.
 
 ## License
 
