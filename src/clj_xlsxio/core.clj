@@ -86,13 +86,6 @@
 
 (defmethod read-xlsx String
   ([filename & {:keys [skip] :or {skip skip-none}}]
-    (let [xlsx (open filename)
-          sheet (sheet-open xlsx skip)
-          res (read-xlsx sheet xlsx)]
-      res)))
-
-;(defn read-xlsx
-  ;[sheet]
-  ;(if-let [first-row (read-row sheet)]
-    ;(lazy-seq (cons first-row (read-xlsx sheet)))
-    ;nil))
+   (let [xlsx (open filename)
+         sheet (sheet-open xlsx skip)]
+     (read-xlsx sheet xlsx))))

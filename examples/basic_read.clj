@@ -18,4 +18,10 @@
   (println "Reading skipping all extra")
   (pr (read/read-xlsx "examples/test.xlsx" :skip read/skip-extra-cells))
   (println)
-  )
+  (let [xlsx (read/open "examples/test.xlsx")
+        sheet (read/sheet-open xlsx)]
+    (println "Reading directly from the sheet object")
+    (pr (read/read-xlsx sheet xlsx))
+    (println)
+    (read/sheet-close sheet)
+    (read/close xlsx)))
