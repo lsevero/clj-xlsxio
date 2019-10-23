@@ -49,35 +49,50 @@
   (.invoke (.getFunction libxlsxio-read "xlsxioread_close") Void (to-array [xlsx])))
 
 (defn read-row
-  [sheet]
-  (if-not (zero? (sheet-next-row sheet))
-    (loop
-      [res []]
-      (if-let [cell-value (sheet-next-cell sheet)]
-        (recur (conj res cell-value))
-        res))
-    nil))
+  ([sheet]
+   (if-not (zero? (sheet-next-row sheet))
+     (loop
+       [res []]
+       (if-let [cell-value (sheet-next-cell sheet)]
+         (recur (conj res cell-value))
+         res))
+     nil))
+  ([sheet xlsx]
+   (if-not (zero? (sheet-next-row sheet))
+     (loop
+       [res []]
+       (if-let [cell-value (sheet-next-cell sheet)]
+         (recur (conj res cell-value))
+         res))
+     (do 
+      (sheet-close sheet)
+      (close xlsx)
+       nil))))
 
-;(defprotocol ReadXlsx
-  ;(read-xlsx [this]))
+(defmulti read-xlsx (fn [x & args] (type x)))
 
-;(extend-protocol ReadXlsx
-  ;com.sun.jna.Pointer
-  ;(read-xlsx [this]
-    ;(if-let [first-row (read-row this)]
-      ;(lazy-seq (cons first-row (read-xlsx this)))
-      ;nil))
-  ;String
-  ;(read-xlsx [filename]
-    ;(let [xlsx (open filename)
-          ;sheet (sheet-open xlsx)
-          ;res (read-xlsx sheet)]
-      ;(sheet-close sheet)
-      ;(close xlsx)
-      ;res)))
+(defmethod read-xlsx Pointer
+  ([sheet]
+    (if-let [first-row (read-row sheet)]
+      (lazy-seq (cons first-row (read-xlsx sheet)))
+      nil))
+  ([sheet xlsx]
+    (if-let [first-row (read-row sheet)]
+      (lazy-seq (cons first-row (read-xlsx sheet)))
+      (do 
+        (sheet-close sheet)
+        (close xlsx)
+        nil))))
 
-(defn read-xlsx
-  [sheet]
-  (if-let [first-row (read-row sheet)]
-    (lazy-seq (cons first-row (read-xlsx sheet)))
-    nil))
+(defmethod read-xlsx String
+  ([filename & {:keys [skip] :or {skip skip-none}}]
+    (let [xlsx (open filename)
+          sheet (sheet-open xlsx skip)
+          res (read-xlsx sheet xlsx)]
+      res)))
+
+;(defn read-xlsx
+  ;[sheet]
+  ;(if-let [first-row (read-row sheet)]
+    ;(lazy-seq (cons first-row (read-xlsx sheet)))
+    ;nil))
