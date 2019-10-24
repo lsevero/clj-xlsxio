@@ -17,17 +17,16 @@
 
 
 
-(def z (NativeLibrary/getInstance "z"))
-(println (dlopen "libz.so"))
-(println z)
-(def expat (NativeLibrary/getInstance "expat"))
-(println (dlopen "libexpat.so"))
-(println expat)
-(def minizip (NativeLibrary/getInstance "minizip"))
-(println (dlopen "libminizip.so"))
-(println minizip)
-(def libxlsxio-read (NativeLibrary/getInstance "xlsxio_read"))
-;(def libxlsxio-write (NativeLibrary/getInstance "xlsxio_write"))
+(do
+  (def z (NativeLibrary/getInstance "z"))
+  (println z)
+  (def expat (NativeLibrary/getInstance "expat"))
+  (println expat)
+  (def minizip (NativeLibrary/getInstance "minizip"))
+  (println minizip)
+  (def libxlsxio-read (NativeLibrary/getInstance "xlsxio_read"))
+  ;(def libxlsxio-write (NativeLibrary/getInstance "xlsxio_write"))
+)
 
 (def ^:const skip-none 0)
 (def ^:const skip-empty-rows 0x01)
