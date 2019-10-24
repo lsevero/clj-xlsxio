@@ -3,8 +3,28 @@
   (:import [com.sun.jna NativeLibrary Pointer Memory NativeLong Platform]
            [java.io FileNotFoundException]))
 
-(def libxlsxio-read (com.sun.jna.NativeLibrary/getInstance "xlsxio_read"))
-;(def libxlsxio-write (com.sun.jna.NativeLibrary/getInstance "xlsxio_write"))
+(let [dl (NativeLibrary/getInstance "dl")
+      RTLD_LAZY	0x00001
+      RTLD_NOW	0x00002
+      RTLD_BINDING_MASK   0x3
+      RTLD_NOLOAD	0x00004
+      RTLD_DEEPBIND	0x00008
+      RTLD_GLOBAL	0x00100]
+  (defn dlopen
+    ^Pointer
+    [^String lib]
+    (.invoke (.getFunction dl "dlopen") Void (to-array [lib (bit-or RTLD_LAZY RTLD_GLOBAL)]))))
+
+
+
+(def z (NativeLibrary/getInstance "z"))
+(dlopen "libz.so.1")
+(def expat (NativeLibrary/getInstance "expat"))
+(dlopen "libexpat.so.1")
+(def minizip (NativeLibrary/getInstance "minizip"))
+(dlopen "libminizip.so.1")
+(def libxlsxio-read (NativeLibrary/getInstance "xlsxio_read"))
+;(def libxlsxio-write (NativeLibrary/getInstance "xlsxio_write"))
 
 (def ^:const skip-none 0)
 (def ^:const skip-empty-rows 0x01)
