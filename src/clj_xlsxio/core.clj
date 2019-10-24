@@ -18,11 +18,14 @@
 
 
 (def z (NativeLibrary/getInstance "z"))
-(dlopen "libz.so.1")
+(println (dlopen "libz.so"))
+(println z)
 (def expat (NativeLibrary/getInstance "expat"))
-(dlopen "libexpat.so.1")
+(println (dlopen "libexpat.so"))
+(println expat)
 (def minizip (NativeLibrary/getInstance "minizip"))
-(dlopen "libminizip.so.1")
+(println (dlopen "libminizip.so"))
+(println minizip)
 (def libxlsxio-read (NativeLibrary/getInstance "xlsxio_read"))
 ;(def libxlsxio-write (NativeLibrary/getInstance "xlsxio_write"))
 
