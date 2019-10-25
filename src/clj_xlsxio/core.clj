@@ -3,27 +3,10 @@
   (:import [com.sun.jna NativeLibrary Pointer Memory NativeLong Platform]
            [java.io FileNotFoundException]))
 
-(let [dl (NativeLibrary/getInstance "dl")
-      RTLD_LAZY	0x00001
-      RTLD_NOW	0x00002
-      RTLD_BINDING_MASK   0x3
-      RTLD_NOLOAD	0x00004
-      RTLD_DEEPBIND	0x00008
-      RTLD_GLOBAL	0x00100]
-  (defn dlopen
-    ^Pointer
-    [^String lib]
-    (.invoke (.getFunction dl "dlopen") Void (to-array [lib (bit-or RTLD_LAZY RTLD_GLOBAL)]))))
-
-
-
 (do
   (def z (NativeLibrary/getInstance "z"))
-  (println z)
   (def expat (NativeLibrary/getInstance "expat"))
-  (println expat)
   (def minizip (NativeLibrary/getInstance "minizip"))
-  (println minizip)
   (def libxlsxio-read (NativeLibrary/getInstance "xlsxio_read"))
   ;(def libxlsxio-write (NativeLibrary/getInstance "xlsxio_write"))
 )
