@@ -3,13 +3,30 @@
   (:import [com.sun.jna NativeLibrary Pointer Memory NativeLong Platform]
            [java.io FileNotFoundException]))
 
-(do
-  (def z (NativeLibrary/getInstance "z"))
-  (def expat (NativeLibrary/getInstance "expat"))
-  (def minizip (NativeLibrary/getInstance "minizip"))
-  (def libxlsxio-read (NativeLibrary/getInstance "xlsxio_read"))
-  ;(def libxlsxio-write (NativeLibrary/getInstance "xlsxio_write"))
-)
+(try
+  (do
+    (def z (NativeLibrary/getInstance "z"))
+    (def expat (NativeLibrary/getInstance "expat"))
+    (def minizip (NativeLibrary/getInstance "minizip"))
+    (def libxlsxio-read (NativeLibrary/getInstance "xlsxio_read"))
+    ;(def libxlsxio-write (NativeLibrary/getInstance "xlsxio_write"))
+    )
+  (catch (Exception e 
+                    (do
+                      (println "============================================================================
+                               We've had a problem loading the native libraries.
+                               This library has three dependencies:
+                               expat, minizip and libz (which is used by minizip)
+                               All of them are bundled in this jar library,
+                               however if you are having issues loading the shared objects consider
+                               installing them on your system.
+
+                               It is important to notice that all of these bundled native libraries were
+                               compiled with GNU libc standard library. If you are on a system based on musl
+                               (like Alpine Linux ) or another standard library you WILL
+                               need to install those 3 dependencies on your system.
+                               ============================================================================")
+                      (pr e)))))
 
 (def ^:const skip-none 0)
 (def ^:const skip-empty-rows 0x01)
@@ -70,24 +87,24 @@
          (recur (conj res cell-value))
          res))
      (do 
-      (sheet-close sheet)
-      (close xlsx)
+       (sheet-close sheet)
+       (close xlsx)
        nil))))
 
 (defmulti read-xlsx (fn [x & args] (type x)))
 
 (defmethod read-xlsx Pointer
   ([sheet]
-    (if-let [first-row (read-row sheet)]
-      (lazy-seq (cons first-row (read-xlsx sheet)))
-      nil))
+   (if-let [first-row (read-row sheet)]
+     (lazy-seq (cons first-row (read-xlsx sheet)))
+     nil))
   ([sheet xlsx]
-    (if-let [first-row (read-row sheet)]
-      (lazy-seq (cons first-row (read-xlsx sheet)))
-      (do 
-        (sheet-close sheet)
-        (close xlsx)
-        nil))))
+   (if-let [first-row (read-row sheet)]
+     (lazy-seq (cons first-row (read-xlsx sheet)))
+     (do 
+       (sheet-close sheet)
+       (close xlsx)
+       nil))))
 
 (defmethod read-xlsx String
   ([filename & {:keys [skip] :or {skip skip-none}}]
