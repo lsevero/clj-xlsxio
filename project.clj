@@ -8,6 +8,6 @@
   :profiles {:dev {:plugins [[cider/cider-nrepl "0.22.3"]
                              [lein-cloverage "1.1.1"]]
                    :main main
-                   :repl-options {:init-ns clj-xlsxio.core}
+                   :repl-options {:init-ns clj-xlsxio.read}
                    :source-paths ["src" "test" "examples"]}}
   :source-paths ["src"])
