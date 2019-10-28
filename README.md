@@ -28,13 +28,13 @@ consider installing them on your system using your favorite package manager.
 
 This library will try to be close as possible to the data.csv interface.
 
-```clojrue
+```clojure
 (require '[clj-xlsxio.read :refer :all])
 
 (read-xlsx "/path/to/your.xlsx")
 ;=> (["row0-cell0" "row0-cell1"] 
-     ["row1-cell0" "row1-cell1"]
-     ...)
+;     ["row1-cell0" "row1-cell1"]
+;     ...)
 ```
 
 `read-xlsx` will return a lazy-seq of rows.
