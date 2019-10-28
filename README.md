@@ -28,7 +28,7 @@ consider installing them on your system using your favorite package manager.
 
 This library will try to be close as possible to the data.csv interface.
 
-```clojrue
+```clojure
 (require '[clj-xlsxio.read :refer :all])
 
 (read-xlsx "/path/to/your.xlsx")
