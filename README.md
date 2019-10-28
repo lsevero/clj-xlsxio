@@ -2,6 +2,8 @@
 
 XLSXIO bidings for clojure using JNA
 
+[![Clojars Project](https://img.shields.io/clojars/v/clj-xlsxio.svg)](https://clojars.org/clj-xlsxio)
+
 # Why?
 
 Java (and therefore clojure) has lots of libraries to deal with xlsx files, but all of them depends on Apache POI one way or another.
