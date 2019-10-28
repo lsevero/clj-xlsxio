@@ -63,3 +63,18 @@
   ^Void
   [^Pointer xlsx]
   (.invoke (.getFunction libxlsxio-read "xlsxioread_close") Void (to-array [xlsx])))
+
+(defn sheetlist-open
+  ^Pointer
+  [^Pointer xlsx]
+  (.invoke (.getFunction libxlsxio-read "xlsxioread_sheetlist_open") Pointer (to-array [xlsx])))
+
+(defn sheetlist-next
+  ^String
+  [^Pointer sheetlist]
+  (.invoke (.getFunction libxlsxio-read "xlsxioread_sheetlist_next") String (to-array [sheetlist])))
+
+(defn sheetlist-close
+  ^Void
+  [^Pointer sheetlist]
+  (.invoke (.getFunction libxlsxio-read "xlsxioread_sheetlist_close") Void (to-array [sheetlist])))

@@ -89,3 +89,24 @@
   ^Date
   [^String n-str]
   (Date. (* 1000 (excel-date->unix-timestamp n-str))))
+
+(defprotocol ListSheets
+  (list-sheets [this]))
+
+(extend-protocol ListSheets
+  Pointer (list-sheets [xlsx]
+            (let [sheetlist (sheetlist-open xlsx)
+                  res (loop [sheets []]
+                        (if-let [sheetname (sheetlist-next sheetlist)]
+                          (recur (conj sheets sheetname))
+                          sheets))]
+              (sheetlist-close sheetlist)
+              res))
+  String  (list-sheets [filename]
+            (let [^Pointer xlsx (open filename)
+                  res (list-sheets xlsx)]
+              (close xlsx)
+              res))
+  File    (list-sheets [file]
+            (let [^String filename (.getAbsolutePath file)]
+              (list-sheets filename))))
