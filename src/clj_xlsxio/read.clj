@@ -69,6 +69,10 @@
   (let [n-columns (-> lz-seq first count)]
     (map zipmap (repeat (map (comp keyword str int->excel-column) (range n-columns))) lz-seq)))
 
+(defn coerce
+  [lz-seq fs]
+  (map (fn [row] (mapv #(%1 %2) fs row)) lz-seq))
+
 (defn excel-date->unix-timestamp
   ^Long
   [^String n-str]

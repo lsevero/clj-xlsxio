@@ -1,6 +1,7 @@
 (ns basic-read
   (:require [clj-xlsxio.read :as read]
-            [clj-xlsxio.low-level-read :as low-level]))
+            [clj-xlsxio.low-level-read :as low-level]
+            [clojure.string :as st]))
 
 (defn basic-read
   []
@@ -34,4 +35,8 @@
     
     (println "Xlsx rows to excel enumerated maps by column:")
     (pr (-> (read/read-xlsx "examples/test.xlsx") read/xlsx->excel-enumerated-maps))
+    (println)
+    
+    (println "Xlsx column coertion:")
+    (pr (-> (read/read-xlsx "examples/coerce_test.xlsx") (read/coerce [(comp inc #(Long/parseLong %)) st/upper-case read/excel-date->java-date])))
     (println)))
