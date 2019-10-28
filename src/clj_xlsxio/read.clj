@@ -1,6 +1,7 @@
 (ns clj-xlsxio.read
   (:require [clj-xlsxio.low-level-read :refer :all])
-  (:import [com.sun.jna Pointer]))
+  (:import [com.sun.jna Pointer]
+           [java.util Date]))
 
 (def ^:const skip-none 0)
 (def ^:const skip-empty-rows 0x01)
@@ -67,3 +68,14 @@
   [lz-seq]
   (let [n-columns (-> lz-seq first count)]
     (map zipmap (repeat (map (comp keyword str int->excel-column) (range n-columns))) lz-seq)))
+
+(defn excel-date->unix-timestamp
+  ^Long
+  [^String n-str]
+  (let [n (Long/parseLong n-str)]
+    (* 86400 (- n 25569))))
+
+(defn excel-date->java-date
+  ^Date
+  [^String n-str]
+  (Date. (* 1000 (excel-date->unix-timestamp n-str))))
