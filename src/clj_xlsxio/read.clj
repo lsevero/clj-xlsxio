@@ -1,7 +1,8 @@
 (ns clj-xlsxio.read
   (:require [clj-xlsxio.low-level-read :refer :all])
   (:import [com.sun.jna Pointer]
-           [java.util Date]))
+           [java.util Date]
+           [java.io File]))
 
 (def ^:const skip-none 0)
 (def ^:const skip-empty-rows 0x01)
@@ -46,10 +47,15 @@
        nil))))
 
 (defmethod read-xlsx String
-  ([filename & {:keys [skip] :or {skip skip-none}}]
-   (let [xlsx (open filename)
-         sheet (sheet-open xlsx skip)]
-     (read-xlsx sheet xlsx))))
+  [filename & {:keys [skip sheet] :or {skip skip-none sheet nil}}]
+  (let [xlsx (open filename)
+        sheet (sheet-open xlsx sheet skip)]
+    (read-xlsx sheet xlsx)))
+
+(defmethod read-xlsx File
+  [file & {:keys [skip sheet] :or {skip skip-none sheet nil}}]
+  (let [^String filename (.getAbsolutePath file)]
+    (read-xlsx filename :sheet sheet :skip skip)))
 
 (defn xlsx->enumerated-maps
   [lz-seq]

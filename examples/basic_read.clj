@@ -1,42 +1,38 @@
 (ns basic-read
   (:require [clj-xlsxio.read :as read]
             [clj-xlsxio.low-level-read :as low-level]
-            [clojure.string :as st]))
+            [clojure.string :as st]
+            [clojure.java.io :as io]))
 
 (defn basic-read
   []
   (do
     (println "Basic reading:") 
-    (pr (read/read-xlsx "examples/test.xlsx"))
-    (println)
+    (prn (read/read-xlsx "examples/test.xlsx"))
     (println "Reading skipping empty rows:")
-    (pr (read/read-xlsx "examples/test.xlsx" :skip read/skip-empty-rows))
-    (println)
+    (prn (read/read-xlsx "examples/test.xlsx" :skip read/skip-empty-rows))
     (println "Reading skipping empty cells:")
-    (pr (read/read-xlsx "examples/test.xlsx" :skip read/skip-empty-cells))
-    (println)
+    (prn (read/read-xlsx "examples/test.xlsx" :skip read/skip-empty-cells))
     (println "Reading skipping all empty:")
-    (pr (read/read-xlsx "examples/test.xlsx" :skip read/skip-all-empty))
-    (println)
+    (prn (read/read-xlsx "examples/test.xlsx" :skip read/skip-all-empty))
     (println "Reading skipping all extra")
-    (pr (read/read-xlsx "examples/test.xlsx" :skip read/skip-extra-cells))
-    (println)
+    (prn (read/read-xlsx "examples/test.xlsx" :skip read/skip-extra-cells))
     (let [xlsx (low-level/open "examples/test.xlsx")
           sheet (low-level/sheet-open xlsx)]
       (println "Reading directly from the sheet object")
-      (pr (read/read-xlsx sheet xlsx))
-      (println)
+      (prn (read/read-xlsx sheet xlsx))
       (low-level/sheet-close sheet)
       (low-level/close xlsx))
 
+    (println "Read xlsx from java File")
+    (prn (read/read-xlsx (io/file "examples/test.xlsx")))
+    
     (println "Xlsx rows to enumerated maps by column:")
-    (pr (-> (read/read-xlsx "examples/test.xlsx") read/xlsx->enumerated-maps))
-    (println)
+    (prn (-> (read/read-xlsx "examples/test.xlsx") read/xlsx->enumerated-maps))
     
     (println "Xlsx rows to excel enumerated maps by column:")
-    (pr (-> (read/read-xlsx "examples/test.xlsx") read/xlsx->excel-enumerated-maps))
-    (println)
+    (prn (-> (read/read-xlsx "examples/test.xlsx") read/xlsx->excel-enumerated-maps))
     
     (println "Xlsx column coertion:")
-    (pr (-> (read/read-xlsx "examples/coerce_test.xlsx") (read/coerce [(comp inc #(Long/parseLong %)) st/upper-case read/excel-date->java-date])))
-    (println)))
+    (prn (-> (read/read-xlsx "examples/coerce_test.xlsx") (read/coerce [(comp inc #(Long/parseLong %)) st/upper-case read/excel-date->java-date])))
+    ))
