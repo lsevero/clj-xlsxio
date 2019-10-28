@@ -1,6 +1,6 @@
 # clj-xlsxio
 
-XLSXIO bidings for clojure using JNA
+[xlsxio](https://github.com/brechtsanders/xlsxio) bidings for clojure using JNA
 
 [![Clojars Project](https://img.shields.io/clojars/v/clj-xlsxio.svg)](https://clojars.org/clj-xlsxio)
 
