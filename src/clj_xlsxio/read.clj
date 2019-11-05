@@ -2,6 +2,7 @@
   (:require [clj-xlsxio.low-level-read :refer :all])
   (:import [com.sun.jna Pointer]
            [java.util Date]
+           [org.joda.time DateTime]
            [java.io File]))
 
 (def ^:const skip-none 0)
@@ -89,6 +90,11 @@
   ^Date
   [^String n-str]
   (Date. (* 1000 (excel-date->unix-timestamp n-str))))
+
+(defn excel-date->joda-date
+  ^DateTime
+  [^String n-str]
+  (DateTime. (* 1000 (excel-date->unix-timestramp n-str))))
 
 (defprotocol ListSheets
   (list-sheets [this]))

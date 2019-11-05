@@ -1,6 +1,6 @@
 (ns clj-xlsxio.low-level-read
   (:require [clojure.java.io :as io])
-  (:import [com.sun.jna NativeLibrary Pointer Memory NativeLong Platform]
+  (:import [com.sun.jna NativeLibrary Pointer]
            [java.io FileNotFoundException]))
 
 (try
@@ -8,9 +8,7 @@
     (def z (NativeLibrary/getInstance "z"))
     (def expat (NativeLibrary/getInstance "expat"))
     (def minizip (NativeLibrary/getInstance "minizip"))
-    (def libxlsxio-read (NativeLibrary/getInstance "xlsxio_read"))
-    ;(def libxlsxio-write (NativeLibrary/getInstance "xlsxio_write"))
-    )
+    (def libxlsxio-read (NativeLibrary/getInstance "xlsxio_read")))
   (catch Exception e 
     (do
       (println "============================================================================
