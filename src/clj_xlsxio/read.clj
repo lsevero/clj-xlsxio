@@ -94,7 +94,7 @@
 (defn excel-date->joda-date
   ^DateTime
   [^String n-str]
-  (DateTime. (* 1000 (excel-date->unix-timestramp n-str))))
+  (DateTime. (* 1000 (excel-date->unix-timestamp n-str))))
 
 (defprotocol ListSheets
   (list-sheets [this]))

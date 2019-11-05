@@ -1,9 +1,10 @@
 (ns clj-xlsxio.low-level-write
-  (:refer-clojure :exlude [name])
+  (:refer-clojure :exclude [name])
   (:require [clojure.java.io :as io])
   (:import [com.sun.jna NativeLibrary Pointer]
            [java.util Date]
-           [org.joda.time DateTime]))
+           [org.joda.time DateTime]
+           [clojure.lang Ratio]))
 
 (try
   (do
@@ -43,7 +44,7 @@
   [^Pointer handle]
   (let [res
         (.invoke (.getFunction libxlsxio-write "xlsxiowrite_close") Long (to-array [handle]))]
-    (if (= res 0)
+    (if-not (= res 0)
       (throw (RuntimeException. (str "Error on xlsxiowrite_close, returned " res)))
       res)))
 
@@ -71,17 +72,17 @@
 
 (defn add-cell-float
   ^Void
-  [^Pointer handle ^double value]
+  [^Pointer handle ^Double value]
   (.invoke (.getFunction libxlsxio-write "xlsxiowrite_add_cell_float") Void (to-array [handle value])))
 
 (defn add-cell-double
   ^Void
-  [^Pointer handle ^double value]
+  [^Pointer handle ^Double value]
   (add-cell-float handle value))
 
 (defn add-cell-datetime
   ^Void
-  [^Pointer handle ^long value]
+  [^Pointer handle ^Long value]
   (.invoke (.getFunction libxlsxio-write "xlsxiowrite_add_cell_datetime") Void (to-array [handle value])))
 
 (defprotocol AddCell
@@ -92,12 +93,14 @@
              (add-cell-string handle value))
   Double   (add-cell-generic [value handle]
              (add-cell-float handle value))
+  Ratio    (add-cell-generic [value handle]
+             (add-cell-float handle (double value)))
   Long     (add-cell-generic [value handle]
              (add-cell-int handle value))
   Date     (add-cell-generic [value handle]
-             (add-cell-datetime handle (/ (.getTime value) 1000)))
+             (add-cell-datetime handle (long (/ (.getTime value) 1000))))
   DateTime (add-cell-generic [value handle]
-             (add-cell-datetime handle (/ (.getMillis value) 1000))))
+             (add-cell-datetime handle (long (/ (.getMillis value) 1000)))))
 
 (defn add-cell
   ^Void
