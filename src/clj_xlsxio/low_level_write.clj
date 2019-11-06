@@ -27,7 +27,7 @@
                It is important to notice that all of these bundled native libraries were
                compiled with GNU libc standard library. If you are on a system based on musl
                (like Alpine Linux ) or another standard library you WILL
-               need to install those 3 dependencies on your system.
+               need to install those 2 dependencies on your system.
                ============================================================================")
       (pr e))))
 
