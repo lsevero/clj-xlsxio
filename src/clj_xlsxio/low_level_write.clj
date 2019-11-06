@@ -10,7 +10,10 @@
   (do
     (def z (NativeLibrary/getInstance "z"))
     (def minizip (NativeLibrary/getInstance "minizip"))
-    (def libxlsxio-write (NativeLibrary/getInstance "xlsxio_write")))
+    (def libxlsxio-write (NativeLibrary/getInstance "xlsxio_write"))
+    (let [c (NativeLibrary/getInstance "c")
+          setlocale (.getFunction c "setlocale")]
+      (doall (map #(.invoke setlocale String (to-array [% "C"])) (range 20)))))
   (catch Exception e 
     (do
       (println "============================================================================
