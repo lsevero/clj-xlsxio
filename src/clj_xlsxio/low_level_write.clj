@@ -4,6 +4,7 @@
   (:import [com.sun.jna NativeLibrary Pointer]
            [java.util Date]
            [org.joda.time DateTime]
+           [java.time LocalDateTime ZoneOffset]
            [clojure.lang Ratio]))
 
 (try
@@ -92,18 +93,20 @@
   (add-cell-generic [generic handle]))
 
 (extend-protocol AddCell
-  String   (add-cell-generic [value handle]
-             (add-cell-string handle value))
-  Double   (add-cell-generic [value handle]
-             (add-cell-float handle value))
-  Ratio    (add-cell-generic [value handle]
-             (add-cell-float handle (double value)))
-  Long     (add-cell-generic [value handle]
-             (add-cell-int handle value))
-  Date     (add-cell-generic [value handle]
-             (add-cell-datetime handle (long (/ (.getTime value) 1000))))
-  DateTime (add-cell-generic [value handle]
-             (add-cell-datetime handle (long (/ (.getMillis value) 1000)))))
+  String        (add-cell-generic [value handle]
+                  (add-cell-string handle value))
+  Double        (add-cell-generic [value handle]
+                  (add-cell-float handle value))
+  Ratio         (add-cell-generic [value handle]
+                  (add-cell-float handle (double value)))
+  Long          (add-cell-generic [value handle]
+                  (add-cell-int handle value))
+  Date          (add-cell-generic [value handle]
+                  (add-cell-datetime handle (long (/ (.getTime value) 1000))))
+  DateTime      (add-cell-generic [value handle]
+                  (add-cell-datetime handle (long (/ (.getMillis value) 1000))))
+  LocalDateTime (add-cell-genetic [value handle]
+                  (add-cell-datetime handle (.toEpochSecond value (ZoneOffset/ofHours 0)))))
 
 (defn add-cell
   ^Void

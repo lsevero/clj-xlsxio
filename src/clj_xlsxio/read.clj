@@ -1,8 +1,9 @@
 (ns clj-xlsxio.read
   (:require [clj-xlsxio.low-level-read :refer :all])
   (:import [com.sun.jna Pointer]
-           [java.util Date]
+           [java.util Date TimeZone]
            [org.joda.time DateTime]
+           [java.time LocalDateTime Instant]
            [java.io File]))
 
 (def ^:const skip-none 0)
@@ -95,6 +96,12 @@
   ^DateTime
   [^String n-str]
   (DateTime. (* 1000 (excel-date->unix-timestamp n-str))))
+
+(defn excel-date->java-localdatetime
+  ^LocalDateTime
+  [^String n-str]
+  (LocalDateTime/ofInstant (Instant/ofEpochSecond (excel-date->unix-timestamp n-str))
+                           (-> (TimeZone/getDefault) .toZoneId)))
 
 (defprotocol ListSheets
   (list-sheets [this]))
