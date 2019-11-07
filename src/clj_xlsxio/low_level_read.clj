@@ -5,8 +5,8 @@
 
 (try
   (do
-    (def z (NativeLibrary/getInstance "z"))
-    (def expat (NativeLibrary/getInstance "expat"))
+    (def z (NativeLibrary/getInstance "libz.so.1"))
+    (def expat (NativeLibrary/getInstance "libexpat.so.1"))
     (def minizip (NativeLibrary/getInstance "minizip"))
     (def libxlsxio-read (NativeLibrary/getInstance "xlsxio_read")))
   (catch Exception e 

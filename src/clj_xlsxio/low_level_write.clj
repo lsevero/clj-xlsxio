@@ -9,7 +9,7 @@
 
 (try
   (do
-    (def z (NativeLibrary/getInstance "z"))
+    (def z (NativeLibrary/getInstance "libz.so.1"))
     (def minizip (NativeLibrary/getInstance "minizip"))
     (def libxlsxio-write (NativeLibrary/getInstance "xlsxio_write"))
     (let [c (NativeLibrary/getInstance "c")
