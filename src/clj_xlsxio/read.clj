@@ -84,8 +84,8 @@
 (defn excel-date->unix-timestamp
   ^Long
   [^String n-str]
-  (let [n (Long/parseLong n-str)]
-    (* 86400 (- n 25569))))
+  (let [n (Double/parseDouble n-str)]
+    (long (* 86400 (- n 25569)))))
 
 (defn excel-date->java-date
   ^Date
