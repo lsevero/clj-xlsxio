@@ -44,7 +44,6 @@ Also check the examples folder for more info on how to use the library.
 
 # TODO
 * add the shared objects files for other OS and others architectures.
-* The `write` namespace.
 
 ## License
 
