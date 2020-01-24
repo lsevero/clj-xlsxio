@@ -77,9 +77,22 @@
   (let [n-columns (-> lz-seq first count)]
     (map zipmap (repeat (map (comp keyword str int->excel-column) (range n-columns))) lz-seq)))
 
+(defn xlsx->column-title-maps
+  "Takes the first row of a xlsx and enumerate every row with the column title"
+  [lz-seq]
+  (map zipmap
+       (->> (first lz-seq)
+            (map keyword)
+            repeat)
+    (rest lz-seq)))
+
 (defn coerce
-  [lz-seq fs]
-  (map (fn [row] (mapv #(%1 %2) fs row)) lz-seq))
+  "Coerce every row applying a vector of functions"
+  [lz-seq fs & {:keys [skip-first-row] :or {skip-first-row false}}]
+  (if skip-first-row
+    (let [[head & tail] lz-seq]
+      (cons head (map (fn [row] (mapv #(%1 %2) fs row)) tail)))
+    (map (fn [row] (mapv #(%1 %2) fs row)) lz-seq)))
 
 (defn excel-date->unix-timestamp
   ^Long

@@ -33,8 +33,16 @@
     (println "Xlsx rows to excel enumerated maps by column:")
     (prn (-> (read/read-xlsx "examples/test.xlsx") read/xlsx->excel-enumerated-maps))
     
+    (println "Xlsx rows to column title maps:")
+    (prn (-> (read/read-xlsx "examples/test.xlsx") read/xlsx->column-title-maps))
+
     (println "Xlsx column coertion:")
     (prn (-> (read/read-xlsx "examples/coerce_test.xlsx") (read/coerce [(comp inc #(Long/parseLong %)) st/upper-case read/excel-date->java-date])))
+
+    (println "Xlsx column coertion skipping first row (useful when the first row are titles):")
+    (prn (-> (read/read-xlsx "examples/coerce_test.xlsx")
+             (read/coerce [(comp inc #(Long/parseLong %)) st/upper-case read/excel-date->java-date]
+                          :skip-first-row true)))
 
     (println "Listing sheets inside xlsx:")
     (prn (read/list-sheets "examples/test.xlsx"))
