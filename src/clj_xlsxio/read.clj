@@ -117,24 +117,6 @@
   [^String n-str]
   (Date. (* 1000 (excel-date->unix-timestamp n-str))))
 
-(comment (let [m {:a "1" :b "10" :c "doasdjasodjas"}
-               fns {:a #(Long/parseLong %) :b excel-date->java-date :c str}
-               ]
-           (map prn m fns)
-           )
-         (let [m {:a "1" :b "10" :c "doasdjasodjas"}
-               fns {:a #(Long/parseLong %) :b excel-date->java-date :c str}
-               ]
-           (into {} (map  (fn [x y] [(x 0) ((y 1) (x 1))]) m fns))
-           )
-         (let [m {:a "1" :b "10" :c "doasdjasodjas"}
-               fns {:a #(Long/parseLong %) :b excel-date->java-date :c str}
-               ]
-           (into {} (map #(do [(%1 0) ((%2 1) (%1 1))]) m fns))
-           )
-         
-         )
-
 (defn excel-date->joda-date
   ^DateTime
   [^String n-str]
