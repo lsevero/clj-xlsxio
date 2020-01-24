@@ -94,6 +94,18 @@
       (cons head (map (fn [row] (mapv #(%1 %2) fs row)) tail)))
     (map (fn [row] (mapv #(%1 %2) fs row)) lz-seq)))
 
+(defn coerce-map
+  "coerce a list of maps based on each key"
+  [lz-seq fs & {:keys [skip-first-row] :or {skip-first-row false}}]
+  (letfn [(coerce-one-map [m fs]
+            (into {} (map #(do [(%1 0) ((%2 1) (%1 1))]) m fs)))]
+    (if skip-first-row
+      (let [[head & tail] lz-seq]
+        (cons head (map coerce-one-map tail (repeat fs))))
+      (map coerce-one-map lz-seq (repeat fs)))))
+
+(comment (coerce-map (repeat 5 {:a "1" :b "10" :c "doasdjasodjas"}) {:a #(Long/parseLong %) :b excel-date->java-date :c str}))
+
 (defn excel-date->unix-timestamp
   ^Long
   [^String n-str]
@@ -104,6 +116,24 @@
   ^Date
   [^String n-str]
   (Date. (* 1000 (excel-date->unix-timestamp n-str))))
+
+(comment (let [m {:a "1" :b "10" :c "doasdjasodjas"}
+               fns {:a #(Long/parseLong %) :b excel-date->java-date :c str}
+               ]
+           (map prn m fns)
+           )
+         (let [m {:a "1" :b "10" :c "doasdjasodjas"}
+               fns {:a #(Long/parseLong %) :b excel-date->java-date :c str}
+               ]
+           (into {} (map  (fn [x y] [(x 0) ((y 1) (x 1))]) m fns))
+           )
+         (let [m {:a "1" :b "10" :c "doasdjasodjas"}
+               fns {:a #(Long/parseLong %) :b excel-date->java-date :c str}
+               ]
+           (into {} (map #(do [(%1 0) ((%2 1) (%1 1))]) m fns))
+           )
+         
+         )
 
 (defn excel-date->joda-date
   ^DateTime
