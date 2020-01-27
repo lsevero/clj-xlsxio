@@ -62,15 +62,15 @@
 (defn xlsx->enumerated-maps
   [lz-seq]
   (let [n-columns (-> lz-seq first count)]
-       (map zipmap (repeat (range n-columns)) lz-seq)))
+    (map zipmap (repeat (range n-columns)) lz-seq)))
 
 (defn- int->excel-column
   [^Long n]
   (loop [s []
          aux (inc n)]
     (if (>= (dec aux) 0)
-        (recur (conj s (char (+ (int \A) (mod (dec aux) 26)))) (quot (dec aux) 26))
-        (reduce str (reverse s)))))
+      (recur (conj s (char (+ (int \A) (mod (dec aux) 26)))) (quot (dec aux) 26))
+      (reduce str (reverse s)))))
 
 (defn xlsx->excel-enumerated-maps
   [lz-seq]
@@ -84,7 +84,7 @@
        (->> (first lz-seq)
             (map keyword)
             repeat)
-    (rest lz-seq)))
+       (rest lz-seq)))
 
 (defn coerce
   "Coerce every row applying a vector of functions"
@@ -94,17 +94,24 @@
       (cons head (map (fn [row] (mapv #(%1 %2) fs row)) tail)))
     (map (fn [row] (mapv #(%1 %2) fs row)) lz-seq)))
 
-(defn coerce-map
-  "coerce a list of maps based on each key"
-  [lz-seq fs & {:keys [skip-first-row] :or {skip-first-row false}}]
-  (letfn [(coerce-one-map [m fs]
-            (into {} (map #(do [(%1 0) ((%2 1) (%1 1))]) m fs)))]
-    (if skip-first-row
-      (let [[head & tail] lz-seq]
-        (cons head (map coerce-one-map tail (repeat fs))))
-      (map coerce-one-map lz-seq (repeat fs)))))
+(defn coerce-map 
+  "coerce one map based on a coercion map"
+  [m fs]
+  (into {} (map #(do [(%1 0) ((%2 1) (%1 1))]) m fs)))
 
-(comment (coerce-map (repeat 5 {:a "1" :b "10" :c "doasdjasodjas"}) {:a #(Long/parseLong %) :b excel-date->java-date :c str}))
+(comment (coerce-map {:a "1" :b "10" :c "doasdjasodjas"}
+                     {:a #(Long/parseLong %) :b excel-date->java-date :c #(count %)}))
+
+(defn coerce-maps
+  "coerce a list of maps based on a coercion map"
+  [lz-seq fs & {:keys [skip-first-row] :or {skip-first-row false}}]
+  (if skip-first-row
+    (let [[head & tail] lz-seq]
+      (cons head (map coerce-map tail (repeat fs))))
+    (map coerce-map lz-seq (repeat fs))))
+
+(comment (coerce-maps (repeat 5 {:a "1" :b "10" :c "doasdjasodjas"})
+                      {:a #(Long/parseLong %) :b excel-date->java-date :c #(count %)}))
 
 (defn excel-date->unix-timestamp
   ^Long
