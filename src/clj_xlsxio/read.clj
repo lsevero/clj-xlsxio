@@ -60,6 +60,7 @@
     (read-xlsx filename :sheet sheet :skip skip)))
 
 (defn xlsx->enumerated-maps
+  "Returns a lazy sequence of maps, keys are the number of the column in the excel format"
   [lz-seq]
   (let [n-columns (-> lz-seq first count)]
     (map zipmap (repeat (range n-columns)) lz-seq)))
@@ -73,6 +74,7 @@
       (reduce str (reverse s)))))
 
 (defn xlsx->excel-enumerated-maps
+  "Returns a lazy sequence of maps, keys are the number of the column in the excel format"
   [lz-seq]
   (let [n-columns (-> lz-seq first count)]
     (map zipmap (repeat (map (comp keyword str int->excel-column) (range n-columns))) lz-seq)))
@@ -95,41 +97,52 @@
     (map (fn [row] (mapv #(%1 %2) fs row)) lz-seq)))
 
 (defn coerce-map 
-  "coerce one map based on a coercion map"
+  "coerce one map based on a coercion map, extra keys are untouched."
   [m fs]
-  (into {} (map #(do [(%1 0) ((%2 1) (%1 1))]) m fs)))
+  (loop [new-m {}
+         ks (keys fs)]
+        (if (empty? ks)
+          (merge m new-m)
+          (recur (assoc new-m (first ks) (((first ks) fs) ((first ks) m)))
+                 (rest ks)))))
 
-(comment (coerce-map {:a "1" :b "10" :c "doasdjasodjas"}
+(comment (coerce-map {:d "extra key" :a "1" :b "10" :c "doasdjasodjas"}
                      {:a #(Long/parseLong %) :b excel-date->java-date :c #(count %)}))
 
 (defn coerce-maps
-  "coerce a list of maps based on a coercion map"
+  "coerce a list of maps based on a coercion map, extra keys will be untouched."
   [lz-seq fs & {:keys [skip-first-row] :or {skip-first-row false}}]
   (if skip-first-row
     (let [[head & tail] lz-seq]
       (cons head (map coerce-map tail (repeat fs))))
     (map coerce-map lz-seq (repeat fs))))
 
-(comment (coerce-maps (repeat 5 {:a "1" :b "10" :c "doasdjasodjas"})
+(comment (coerce-maps (repeat 5 {:d "an extra key"
+                                 :another-extra-key-with-a-bizare-class-that-we-dont-want-to-mess-with-or-apply-a-coercion (Thread.)
+                                 :a "1" :b "10" :c "doasdjasodjas"})
                       {:a #(Long/parseLong %) :b excel-date->java-date :c #(count %)}))
 
 (defn excel-date->unix-timestamp
+  "Takes a excel date and convert it to a unix timestamp"
   ^Long
   [^String n-str]
   (let [n (Double/parseDouble n-str)]
     (long (* 86400 (- n 25569)))))
 
 (defn excel-date->java-date
+  "Takes a excel date and convert it to a java Date object"
   ^Date
   [^String n-str]
   (Date. (* 1000 (excel-date->unix-timestamp n-str))))
 
 (defn excel-date->joda-date
+  "Takes a excel date and convert it to a joda time DateTime object"
   ^DateTime
   [^String n-str]
   (DateTime. (* 1000 (excel-date->unix-timestamp n-str))))
 
 (defn excel-date->java-localdatetime
+  "Takes a excel date and convert it to a java.time.LocalDateTime object"
   ^LocalDateTime
   [^String n-str]
   (LocalDateTime/ofInstant (Instant/ofEpochSecond (excel-date->unix-timestamp n-str))
