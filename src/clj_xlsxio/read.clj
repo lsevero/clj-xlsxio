@@ -55,7 +55,7 @@
     (read-xlsx sheet xlsx)))
 
 (defmethod read-xlsx File
-  [file & {:keys [skip sheet] :or {skip skip-none sheet nil}}]
+  [^File file & {:keys [skip sheet] :or {skip skip-none sheet nil}}]
   (let [^String filename (.getAbsolutePath file)]
     (read-xlsx filename :sheet sheet :skip skip)))
 
@@ -133,7 +133,7 @@
   "Takes a excel date and convert it to a java Date object"
   ^Date
   [^String n-str]
-  (Date. (* 1000 (excel-date->unix-timestamp n-str))))
+  (Date. ^Long (* 1000 (excel-date->unix-timestamp n-str))))
 
 (defn excel-date->joda-date
   "Takes a excel date and convert it to a joda time DateTime object"

@@ -11,8 +11,8 @@
   (do
     (def z (NativeLibrary/getInstance "libz.so.1"))
     (def minizip (NativeLibrary/getInstance "minizip"))
-    (def libxlsxio-write (NativeLibrary/getInstance "xlsxio_write"))
-    (let [c (NativeLibrary/getInstance "c")
+    (def ^NativeLibrary libxlsxio-write (NativeLibrary/getInstance "xlsxio_write"))
+    (let [^NativeLibrary c (NativeLibrary/getInstance "c")
           setlocale (.getFunction c "setlocale")]
       (doall (map #(.invoke setlocale String (to-array [% "C"])) (range 20)))))
   (catch Exception e 

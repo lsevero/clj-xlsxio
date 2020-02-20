@@ -8,7 +8,7 @@
     (def z (NativeLibrary/getInstance "libz.so.1"))
     (def expat (NativeLibrary/getInstance "libexpat.so.1"))
     (def minizip (NativeLibrary/getInstance "minizip"))
-    (def libxlsxio-read (NativeLibrary/getInstance "xlsxio_read")))
+    (def ^NativeLibrary libxlsxio-read (NativeLibrary/getInstance "xlsxio_read")))
   (catch Exception e 
     (do
       (println "============================================================================
