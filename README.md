@@ -42,6 +42,12 @@ This library will try to be close as possible to the data.csv interface.
 There is also the low level interface that is exactly like the xlsxio C interface.
 Also check the examples folder for more info on how to use the library.
 
+# Supported architectures
+This library depends on native shared objects that needs to be compiled for each OS and each architecture.
+Currently this library only support:
+* linux-x86-64
+* linux-x86
+
 # TODO
 * add the shared objects files for other OS and others architectures.
 
