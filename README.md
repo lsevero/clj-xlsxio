@@ -46,7 +46,15 @@ Also check the examples folder for more info on how to use the library.
 This library depends on native shared objects that needs to be compiled for each OS and each architecture.
 Currently this library only support:
 * linux-x86-64
+* linux-aarch64
+
+## Unstable architectures
+I have been testing clj-xlsxio in some different architectures and some of them were completely unstable
+and unreliable for various reasons like different endianness which I honestly don't know how to fix.
+So I've decided to remove than from the master branch and the releases on clojars, but they are available
+in the experimental branch. The unstable architectures are:
 * linux-x86
+* linux-arm
 
 # TODO
 * add the shared objects files for other OS and others architectures.
