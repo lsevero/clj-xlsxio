@@ -80,11 +80,14 @@
     (map zipmap (repeat (map (comp keyword str int->excel-column) (range n-columns))) lz-seq)))
 
 (defn xlsx->column-title-maps
-  "Takes the first row of a xlsx and enumerate every row with the column title"
-  [lz-seq]
+  "Takes the first row of a xlsx and enumerate every row with the column title.
+  Use the keyword arg :column-fn to pass a functions that are applied on each of the column names, must be a function of 1 arg. 
+  "
+  [lz-seq & {:keys [str-keys column-fn] :or {str-keys false column-fn nil}}]
   (map zipmap
        (->> (first lz-seq)
-            (map keyword)
+            (#(if column-fn (map column-fn %) %))
+            (#(if str-keys % (map keyword %)))
             repeat)
        (rest lz-seq)))
 

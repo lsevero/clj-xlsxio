@@ -36,6 +36,12 @@
     (println "Xlsx rows to column title maps:")
     (prn (-> (read/read-xlsx "examples/test.xlsx") read/xlsx->column-title-maps))
 
+    (println "Xlsx rows to column title maps with column-fn:")
+    (prn (-> (read/read-xlsx "examples/test.xlsx") (read/xlsx->column-title-maps :column-fn st/upper-case)))
+
+    (println "Xlsx rows to column title string maps:")
+    (prn (-> (read/read-xlsx "examples/test.xlsx") (read/xlsx->column-title-maps :str-keys true)))
+
     (println "Xlsx column coertion:")
     (prn (-> (read/read-xlsx "examples/coerce_test.xlsx") (read/coerce [(comp inc #(Long/parseLong %)) st/upper-case read/excel-date->java-date])))
 
