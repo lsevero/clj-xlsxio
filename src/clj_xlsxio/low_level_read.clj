@@ -1,7 +1,9 @@
 (ns clj-xlsxio.low-level-read
   (:require [clojure.java.io :as io])
   (:import [com.sun.jna NativeLibrary Pointer]
-           [java.io FileNotFoundException]))
+           [java.io FileNotFoundException File]
+           [java.util.zip ZipFile]
+           [java.nio.file Files]))
 
 (try
   (do
@@ -30,7 +32,15 @@
   ^Pointer
   [^String filename]
   (if (.exists (io/file filename))
-    (.invoke (.getFunction libxlsxio-read "xlsxioread_open") Pointer (to-array [filename]))
+    (do
+      (try
+        (ZipFile. filename)
+        (catch Exception e
+          (throw (IllegalArgumentException. (str "File " filename " is not a valid xlsx file.")))))
+      (when-not (= "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                   (Files/probeContentType (.toPath ^File (io/file filename))))
+        (throw (IllegalArgumentException. (str "File " filename " is not a valid xlsx file."))))
+      (.invoke (.getFunction libxlsxio-read "xlsxioread_open") Pointer (to-array [filename])))
     (throw (FileNotFoundException. (str "File " filename " does not exists.")))))
 
 (defn sheet-open
