@@ -1,4 +1,4 @@
-(defproject clj-xlsxio "0.6.0"
+(defproject clj-xlsxio "0.6.1"
   :description "xlsxio for clojure"
   :url "https://github.com/lsevero/clj-xlsxio"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"

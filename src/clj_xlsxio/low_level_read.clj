@@ -8,16 +8,17 @@
 
 (defn open
   ^Pointer
-  [^String filename]
+  [^String filename & {:keys [check-mime-type] :or {check-mime-type false}}]
   (if (.exists (io/file filename))
     (do
       (try
         (ZipFile. filename)
         (catch Exception e
           (throw (IllegalArgumentException. (str "File " filename " is not a valid xlsx file.")))))
-      (when-not (= "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                   (Files/probeContentType (.toPath ^File (io/file filename))))
-        (throw (IllegalArgumentException. (str "File " filename " is not a valid xlsx file."))))
+      (when check-mime-type 
+        (when-not (= "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                     (Files/probeContentType (.toPath ^File (io/file filename))))
+          (throw (IllegalArgumentException. (str "File " filename " is not a valid xlsx file.")))))
       (XlsxioRead/xlsxioread_open filename))
     (throw (FileNotFoundException. (str "File " filename " does not exists.")))))
 
