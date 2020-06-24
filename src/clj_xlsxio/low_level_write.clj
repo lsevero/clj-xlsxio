@@ -5,9 +5,31 @@
            [java.util Date]
            [org.joda.time DateTime]
            [java.time LocalDateTime ZoneOffset]
-           [clojure.lang Ratio]
-           [xlsxio.jna XlsxioWrite]
-           ))
+           [clojure.lang Ratio]))
+
+(try
+  (do
+    (def z (NativeLibrary/getInstance "libz.so.1"))
+    (def minizip (NativeLibrary/getInstance "minizip"))
+    (import [xlsxio.jna XlsxioWrite])
+    (let [^NativeLibrary c (NativeLibrary/getInstance "c")
+          setlocale (.getFunction c "setlocale")]
+      (doall (map #(.invoke setlocale String (to-array [% "C"])) (range 20)))))
+  (catch Exception e 
+    (do
+      (println "============================================================================
+               We've had a problem loading the native libraries.
+               This library has two dependencies:
+               minizip and libz (which is used by minizip)
+               All of them are bundled in this jar library,
+               however if you are having issues loading the shared objects consider
+               installing them on your system.
+               It is important to notice that all of these bundled native libraries were
+               compiled with GNU libc standard library. If you are on a system based on musl
+               (like Alpine Linux ) or another standard library you WILL
+               need to install those 2 dependencies on your system.
+               ============================================================================")
+      (pr e))))
 
 (let [^NativeLibrary c (NativeLibrary/getInstance "c")
       setlocale (.getFunction c "setlocale")]

@@ -3,8 +3,29 @@
   (:import [com.sun.jna NativeLibrary Pointer]
            [java.io FileNotFoundException File]
            [java.util.zip ZipFile]
-           [java.nio.file Files]
-           [xlsxio.jna XlsxioRead]))
+           [java.nio.file Files]))
+
+(try
+  (do
+    (def z (NativeLibrary/getInstance "libz.so.1"))
+    (def expat (NativeLibrary/getInstance "libexpat.so.1"))
+    (def minizip (NativeLibrary/getInstance "minizip"))
+    (import [xlsxio.jna XlsxioRead]))
+  (catch Exception e 
+    (do
+      (println "============================================================================
+               We've had a problem loading the native libraries.
+               This library has three dependencies:
+               expat, minizip and libz (which is used by minizip)
+               All of them are bundled in this jar library,
+               however if you are having issues loading the shared objects consider
+               installing them on your system.
+               It is important to notice that all of these bundled native libraries were
+               compiled with GNU libc standard library. If you are on a system based on musl
+               (like Alpine Linux ) or another standard library you WILL
+               need to install those 3 dependencies on your system.
+               ============================================================================")
+      (pr e))))
 
 (defn open
   ^Pointer
