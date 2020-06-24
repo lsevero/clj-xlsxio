@@ -10,11 +10,11 @@
 (try
   (do
     (def z (NativeLibrary/getInstance "libz.so.1"))
-    (def minizip (NativeLibrary/getInstance "minizip"))
+    (def minizip (NativeLibrary/getInstance "libminizip.so.1"))
     (import [xlsxio.jna XlsxioWrite])
     (let [^NativeLibrary c (NativeLibrary/getInstance "c")
           setlocale (.getFunction c "setlocale")]
-      (doall (map #(.invoke setlocale String (to-array [% "C"])) (range 20)))))
+      (mapv #(.invoke setlocale String (to-array [% "C"])) (range 30))))
   (catch Exception e 
     (do
       (println "============================================================================
@@ -30,10 +30,6 @@
                need to install those 2 dependencies on your system.
                ============================================================================")
       (pr e))))
-
-(let [^NativeLibrary c (NativeLibrary/getInstance "c")
-      setlocale (.getFunction c "setlocale")]
-  (doall (map #(.invoke setlocale String (to-array [% "C"])) (range 30))))
 
 (defn open
   ^Pointer

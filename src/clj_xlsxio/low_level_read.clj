@@ -9,7 +9,7 @@
   (do
     (def z (NativeLibrary/getInstance "libz.so.1"))
     (def expat (NativeLibrary/getInstance "libexpat.so.1"))
-    (def minizip (NativeLibrary/getInstance "minizip"))
+    (def minizip (NativeLibrary/getInstance "libminizip.so.1"))
     (import [xlsxio.jna XlsxioRead]))
   (catch Exception e 
     (do
