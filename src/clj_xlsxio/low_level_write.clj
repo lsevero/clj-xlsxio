@@ -95,7 +95,7 @@
                   (add-cell-datetime handle (NativeLong. (long (/ (.getTime value) 1000)))))
   DateTime      (add-cell-generic [value handle]
                   (add-cell-datetime handle (NativeLong. (long (/ (.getMillis value) 1000)))))
-  LocalDateTime (add-cell-genetic [value handle]
+  LocalDateTime (add-cell-generic [value handle]
                   (add-cell-datetime handle (NativeLong. (long (.toEpochSecond value (ZoneOffset/ofHours 0)))))))
 
 (defn add-cell
