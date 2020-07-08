@@ -12,8 +12,5 @@
                    :main main
                    :repl-options {:init-ns clj-xlsxio.read}
                    :source-paths ["src" "test" "examples"]}}
-  :repositories [["releases" {:url "https://repo.clojars.org/"
-                              :username :env/clojars_auth
-                              :password :env/clojars_token}]]
   :source-paths ["src"]
   :java-source-paths ["java"])
