@@ -1,5 +1,6 @@
 (ns clj-xlsxio.read
-  (:require [clj-xlsxio.low-level-read :refer :all])
+  (:require [clj-xlsxio.low-level-read :refer :all]
+            [clojure.set :as set])
   (:import [com.sun.jna Pointer]
            [java.util Date TimeZone]
            [org.joda.time DateTime]
@@ -100,17 +101,19 @@
     (map (fn [row] (mapv #(%1 %2) fs row)) lz-seq)))
 
 (defn coerce-map 
-  "coerce one map based on a coercion map, extra keys are untouched."
+  "Coerce one map based on a coercion map, extra keys are untouched.
+  Extra keys in fs will be ignored."
   [m fs]
   (loop [new-m {}
-         ks (keys fs)]
+         ks (into [] (set/intersection (set (keys m)) (set (keys fs))))]
         (if (empty? ks)
           (merge m new-m)
           (recur (assoc new-m (first ks) (((first ks) fs) ((first ks) m)))
                  (rest ks)))))
-
 (comment (coerce-map {:d "extra key" :a "1" :b "10" :c "doasdjasodjas"}
                      {:a #(Long/parseLong %) :b excel-date->java-date :c #(count %)}))
+(comment (coerce-map {:d "extra key" :a "1" :b "10" :c "doasdjasodjas"}
+                     {:a #(Long/parseLong %) :b excel-date->java-date :c #(count %) :e #(Double/parseDouble %)}))
 
 (defn coerce-maps
   "coerce a list of maps based on a coercion map, extra keys will be untouched."
