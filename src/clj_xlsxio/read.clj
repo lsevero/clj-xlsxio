@@ -100,7 +100,7 @@
       (cons head (map (fn [row] (mapv #(%1 %2) fs row)) tail)))
     (map (fn [row] (mapv #(%1 %2) fs row)) lz-seq)))
 
-(defn coerce-map 
+(defn coerce-map
   "Coerce one map based on a coercion map, extra keys are untouched.
   Extra keys in fs will be ignored."
   [m fs]
@@ -108,10 +108,17 @@
          ks (into [] (set/intersection (set (keys m)) (set (keys fs))))]
         (if (empty? ks)
           (merge m new-m)
-          (recur (assoc new-m (first ks) (((first ks) fs) ((first ks) m)))
+          (recur (assoc new-m (first ks) ((get fs (first ks)) (get m (first ks))))
                  (rest ks)))))
+
 (comment (coerce-map {:d "extra key" :a "1" :b "10" :c "doasdjasodjas"}
                      {:a #(Long/parseLong %) :b excel-date->java-date :c #(count %)}))
+
+(comment
+  ;; test with string keys
+  (coerce-map {"d" "extra key" "a" "1" "b" "10" "c" "doasdjasodjas"}
+              {"a" #(Long/parseLong %) "b" excel-date->java-date "c" #(count %)}))
+
 (comment (coerce-map {:d "extra key" :a "1" :b "10" :c "doasdjasodjas"}
                      {:a #(Long/parseLong %) :b excel-date->java-date :c #(count %) :e #(Double/parseDouble %)}))
 
