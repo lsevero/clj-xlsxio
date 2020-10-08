@@ -1,11 +1,13 @@
 (ns clj-xlsxio.read
   (:require [clj-xlsxio.low-level-read :refer :all]
-            [clojure.set :as set])
+            [clojure.set :as set]
+            [clojure.java.io :as io])
   (:import [com.sun.jna Pointer]
            [java.util Date TimeZone]
            [org.joda.time DateTime]
            [java.time LocalDateTime Instant]
-           [java.io File]))
+           [java.io File]
+           [java.io BufferedInputStream]))
 
 (def ^:const skip-none 0)
 (def ^:const skip-empty-rows 0x01)
@@ -59,6 +61,17 @@
   [^File file & {:keys [skip sheet] :or {skip skip-none sheet nil}}]
   (let [^String filename (.getAbsolutePath file)]
     (read-xlsx filename :sheet sheet :skip skip)))
+
+(defmethod read-xlsx BufferedInputStream
+  [^BufferedInputStream stream & {:keys [skip sheet] :or {skip skip-none sheet nil}}]
+  (let [fname (str (gensym))
+        fext (str (gensym))
+        tmp (File/createTempFile fname fext)]
+    (.deleteOnExit tmp)
+    (with-open [in stream
+                out (java.io.FileOutputStream. tmp)]
+      (io/copy in out))
+    (read-xlsx (.getAbsolutePath tmp) :sheet sheet :skip skip)))
 
 (defn xlsx->enumerated-maps
   "Returns a lazy sequence of maps, keys are the number of the column in the excel format"
