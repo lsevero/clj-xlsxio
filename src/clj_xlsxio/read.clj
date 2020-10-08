@@ -193,4 +193,12 @@
               res))
   File    (list-sheets [file]
             (let [^String filename (.getAbsolutePath file)]
-              (list-sheets filename))))
+              (list-sheets filename)))
+  BufferedInputStream (list-sheets [stream]
+                        (let [fname (str (gensym))
+                              fext (str (gensym))
+                              tmp (File/createTempFile fname fext)]
+                          (.deleteOnExit tmp)
+                          (with-open [in stream out (java.io.FileOutputStream. tmp)]
+                            (io/copy in out))
+                          (list-sheets (.getAbsolutePath tmp)))))
