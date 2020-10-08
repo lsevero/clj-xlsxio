@@ -114,4 +114,8 @@
 
   (testing "list sheets reading from java.io.File"
     (is (= (sut/list-sheets (io/file "examples/test.xlsx"))
+           ["Sheet1"])))
+
+  (testing "list sheets reading from java.io.BufferedInputStream"
+    (is (= (sut/list-sheets (io/input-stream "examples/test.xlsx"))
            ["Sheet1"]))))
