@@ -16,10 +16,10 @@ public class XlsxioRead {
     public static native String xlsxioread_sheetlist_next(Pointer sheetlisthandle);
 
     static {
-        if(Platform.isLinux())
+        if(Platform.isLinux() || Platform.isMac())
             Native.register("xlsxio_read");
         else
-            throw new RuntimeException("Unrecognized OS. Supported OS are linux-arm64, linux-x86-64");
+            throw new RuntimeException("Unrecognized OS. Supported OS are linux-arm64, linux-x86-64, darwin-x86-64");
     }
 
 }

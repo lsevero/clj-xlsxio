@@ -16,9 +16,9 @@ public class XlsxioWrite {
     public static native void xlsxiowrite_add_cell_datetime(Pointer handle, NativeLong value);
 
     static {
-        if(Platform.isLinux())
+        if(Platform.isLinux() || Platform.isMac())
             Native.register("xlsxio_write");
         else
-            throw new RuntimeException("Unrecognized OS. Supported OS are linux-arm64, linux-x86-64");
+            throw new RuntimeException("Unrecognized OS. Supported OS are linux-arm64, linux-x86-64, darwin-x86-64");
     }
 }

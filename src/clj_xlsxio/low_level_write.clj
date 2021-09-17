@@ -9,8 +9,8 @@
 
 (try
   (do
-    (def z (NativeLibrary/getInstance "libz.so.1"))
-    (def minizip (NativeLibrary/getInstance "libminizip.so.1"))
+    (def z (NativeLibrary/getInstance "z"))
+    (def minizip (NativeLibrary/getInstance "minizip"))
     (import [xlsxio.jna XlsxioWrite])
     (let [^NativeLibrary c (NativeLibrary/getInstance "c")
           setlocale (.getFunction c "setlocale")]
